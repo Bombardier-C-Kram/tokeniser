@@ -22,7 +22,7 @@
 }
     mrp←{ ⍝ Find Minimum rank pair
         0=≢⍵:⍬
-        ⊃(⍵,⊂⍬)[⍋{tokens⍳⊂∊⍵}¨⍵]
+        ⊃(⍵,⊂⍬)[(∊¨⍵)⍳⊂(tokens,⊂⍬)⊃⍨⌊/{tokens⍳⊂∊⍵}¨⍵]
     }
 
     mp←{ ⍝ merge pairs
