@@ -19,11 +19,10 @@
         0=≢⍵:⍬
         p←'''(?i:[sdmt]|ll|ve|re)|[^\r\n\p{L}\p{N}]?+\p{L}++|\p{N}{1,3}+| ?[^\s\p{L}\p{N}]++[\r\n]*+|\s++$|\s*[\r\n]|\s+(?!\S)|\s'
         {(⊂⍵){(1⊃⍵)↑(0⊃⍵)↓⍺}¨p ⎕S 0 1⍠('Mode' 'M')⊢⍵}⍵
-    }
-
+}
     mrp←{ ⍝ Find Minimum rank pair
         0=≢⍵:⍬
-        (tokens,⍬)[⊃⍋{tokens⍳⊂∊⍵}¨⍵]
+        ⊃(⍵,⊂⍬)[⍋{tokens⍳⊂∊⍵}¨⍵]
     }
 
     mp←{ ⍝ merge pairs
