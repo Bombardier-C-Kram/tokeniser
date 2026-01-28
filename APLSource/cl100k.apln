@@ -1,0 +1,52 @@
+:Namespace cl100k
+    ⍝ cl100k_base Tokeniser for Dyalog APL
+    ⍝ Implementation similar to OpenAI's tiktoken
+    ⎕IO←0
+    ⎕ML←1
+
+    tokens←⍬
+    ranks←⍬
+
+    'base64' ⎕CY 'dfns'
+
+    Load←{
+        lines←⊃⎕NGET ⍵ 1
+        _←{s←' '(≠⊆⊢)⍵ ⋄ tokens,←⊂∊base64⊃s ⋄ ranks,←⊃1⊃⎕VFI 1⊃s}¨lines
+        1
+    }
+
+    s←{
+        0=≢⍵:⍬
+        p←'''(?i:[sdmt]|ll|ve|re)|[^\r\n\p{L}\p{N}]?+\p{L}++|\p{N}{1,3}+| ?[^\s\p{L}\p{N}]++[\r\n]*+|\s++$|\s*[\r\n]|\s+(?!\S)|\s'
+        {(⊂⍵){(1⊃⍵)↑(0⊃⍵)↓⍺}¨p ⎕S 0 1⍠('Mode' 'M')⊢⍵}⍵
+    }
+
+    mrp←{ ⍝ Find Minimum rank pair
+        0=≢⍵:⍬
+        (tokens,⍬)[⊃⍋{tokens⍳⊂∊⍵}¨⍵]
+    }
+
+    mp←{ ⍝ merge pairs
+        0=≢⍺:⍵
+        ∊¨(,¨⍺)(⊢⊂⍨(~∘⌽⍷⍥⌽))⍵
+    }
+
+    BPE←{ ⍝ Byte Pair Encoding Algthm
+        1≥≢⍵:,⊂⍵
+        {
+            p←2(,⍥⊂)/⍵
+            b←mrp p
+            0=≢b:⍵
+            b mp ⍵
+        }⍣≡,¨⍵
+    }
+
+
+    Encode←{
+        {tokens⍳⊂∊⍵}¨{⊃,/,¨⊆¨⍵}{BPE 'UTF-8' ⎕UCS⍵}¨s ∊⍵
+    }
+
+    Decode←{
+        'UTF-8' ⎕UCS ∊tokens[⍵]
+    }
+:EndNamespace
